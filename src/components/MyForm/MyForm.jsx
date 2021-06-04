@@ -5,16 +5,17 @@ const MyForm = () => {
     const onSubmit = (values) => {
         window.alert(JSON.stringify(values))
     }
-    // const validate = () => {
-    //     console.log('xd')
-    // }
+
     const required = value => (value ? undefined : 'Required')
     return (
         <Form
             onSubmit={onSubmit}
             validate={required}
-            render={({ handleSubmit, submitting, values }) => (
-                <form onSubmit={handleSubmit}>
+            render={({ handleSubmit, submitting, values, form }) => (
+                <form onSubmit={async event => {
+                    await handleSubmit(event)
+                    form.reset()
+                }}>
                     <h2>Simple Default Input</h2>
 
                     <Field name="name" validate={required}>
