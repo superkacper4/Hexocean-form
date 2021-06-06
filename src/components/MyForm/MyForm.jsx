@@ -1,10 +1,14 @@
 import React from 'react'
 import { Form, Field } from 'react-final-form'
+import { sendDish } from './MyForm.api'
 
 const MyForm = () => {
     const onSubmit = (values) => {
-        window.alert(JSON.stringify(values))
+        console.log(values)
+        // console.log(typeof values.spiciness_scale)
+        sendDish(values)
     }
+
 
     const required = value => (value ? undefined : 'Required')
     return (
@@ -14,7 +18,7 @@ const MyForm = () => {
             render={({ handleSubmit, submitting, values, form }) => (
                 <form onSubmit={async event => {
                     await handleSubmit(event)
-                    form.reset()
+                    // form.reset()
                 }}>
                     <h2>Simple Default Input</h2>
 
@@ -46,7 +50,7 @@ const MyForm = () => {
 
                     {values.type === "pizza" ? <>
 
-                        <Field name="no_of_slices" validate={required}>
+                        <Field name="no_of_slices" validate={required} parse={value => Number(value)}>
                             {({ input, meta }) => (
                                 <div>
                                     <input {...input} type="number" placeholder="10" min="0" max="20" />
@@ -55,7 +59,7 @@ const MyForm = () => {
                             )}
                         </Field>
 
-                        <Field name="diameter" validate={required}>
+                        <Field name="diameter" validate={required} parse={value => Number(value)}>
                             {({ input, meta }) => (
                                 <div>
                                     <input {...input} type="number" placeholder="60" min="0" max="400" />
@@ -68,7 +72,7 @@ const MyForm = () => {
 
                     {values.type === "soup" ? <>
 
-                        <Field name="spicines_scale" validate={required}>
+                        <Field name="spiciness_scale" validate={required} parse={value => Number(value)}>
                             {({ input, meta }) => (
                                 <div>
                                     <input {...input} type="number" placeholder="5" min="0" max="10" />
@@ -81,7 +85,7 @@ const MyForm = () => {
 
                     {values.type === "sandwich" ? <>
 
-                        <Field name="slices_of_bread" validate={required}>
+                        <Field name="slices_of_bread" validate={required} parse={value => Number(value)}>
                             {({ input, meta }) => (
                                 <div>
                                     <input {...input} type="number" placeholder="10" min="1" max="20" />
