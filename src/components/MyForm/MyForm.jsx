@@ -1,70 +1,74 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Form, Field } from 'react-final-form'
 import { sendDish } from './MyForm.api'
+import { StyledMyForm, StyledInput, StyledH2, StyledOption, StyledSelect, StyledSubmit, StyledAlert } from './MyForm.css'
 
 const MyForm = () => {
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState()
+    const [success, setSuccess] = useState()
+
     const onSubmit = (values) => {
-        console.log(values)
-        // console.log(typeof values.spiciness_scale)
-        sendDish(values)
+        sendDish(values, setLoading, setError, setSuccess)
     }
 
 
-    const required = value => (value ? undefined : 'Required')
+    const required = value => (value ? undefined : <StyledAlert isErr={true}>Required</StyledAlert>)
+
     return (
         <Form
             onSubmit={onSubmit}
             validate={required}
-            render={({ handleSubmit, submitting, values, form }) => (
-                <form onSubmit={async event => {
+            render={({ handleSubmit, submitting, values }) => (
+                <StyledMyForm onSubmit={async event => {
                     await handleSubmit(event)
-                    // form.reset()
                 }}>
-                    <h2>Simple Default Input</h2>
+                    <StyledH2>MyForm</StyledH2>
 
                     <Field name="name" validate={required}>
                         {({ input, meta }) => (
-                            <div>
-                                <input {...input} type="text" placeholder="Name" />
+                            <>
+                                <StyledInput {...input} type="text" placeholder="Name" />
                                 {meta.error && meta.touched && <span>{meta.error}</span>}
-                            </div>
+                            </>
                         )}
                     </Field>
 
                     <Field name="preparation_time" validate={required} default>
                         {({ input, meta }) => (
-                            <div>
-                                <input {...input} type="time" step="1" />
+                            <>
+                                <StyledInput {...input} type="time" step="1" />
                                 {meta.error && meta.touched && <span>{meta.error}</span>}
-                            </div>
+                            </>
                         )}
                     </Field>
 
-                    <Field name="type" component="select" validate={required}>
+                    <StyledSelect name="type" component="select" validate={required}>
 
-                        <option value="pizza">🍕 Pizza</option>
-                        <option value="sandwich">🥪 Sandwich</option>
-                        <option value="soup">🥣 Soup</option>
+                        <StyledOption value="" selected disabled>------</StyledOption>
+                        <StyledOption value="pizza">🍕 Pizza</StyledOption>
+                        <StyledOption value="sandwich">🥪 Sandwich</StyledOption>
+                        <StyledOption value="soup">🥣 Soup</StyledOption>
 
-                    </Field>
+                    </StyledSelect>
 
                     {values.type === "pizza" ? <>
 
                         <Field name="no_of_slices" validate={required} parse={value => Number(value)}>
                             {({ input, meta }) => (
-                                <div>
-                                    <input {...input} type="number" placeholder="10" min="0" max="20" />
+                                <>
+                                    <StyledInput {...input} type="number" placeholder="10" min="0" max="20" />
                                     {meta.error && meta.touched && <span>{meta.error}</span>}
-                                </div>
+                                </>
                             )}
                         </Field>
 
                         <Field name="diameter" validate={required} parse={value => Number(value)}>
                             {({ input, meta }) => (
-                                <div>
-                                    <input {...input} type="number" placeholder="60" min="0" max="400" />
+                                <>
+                                    <StyledInput {...input} type="number" placeholder="60" min="0" max="400" />
                                     {meta.error && meta.touched && <span>{meta.error}</span>}
-                                </div>
+                                </>
                             )}
                         </Field>
 
@@ -74,10 +78,10 @@ const MyForm = () => {
 
                         <Field name="spiciness_scale" validate={required} parse={value => Number(value)}>
                             {({ input, meta }) => (
-                                <div>
-                                    <input {...input} type="number" placeholder="5" min="0" max="10" />
+                                <>
+                                    <StyledInput {...input} type="number" placeholder="5" min="0" max="10" />
                                     {meta.error && meta.touched && <span>{meta.error}</span>}
-                                </div>
+                                </>
                             )}
                         </Field>
 
@@ -87,20 +91,23 @@ const MyForm = () => {
 
                         <Field name="slices_of_bread" validate={required} parse={value => Number(value)}>
                             {({ input, meta }) => (
-                                <div>
-                                    <input {...input} type="number" placeholder="10" min="1" max="20" />
+                                <>
+                                    <StyledInput {...input} type="number" placeholder="10" min="1" max="20" />
                                     {meta.error && meta.touched && <span>{meta.error}</span>}
-                                </div>
+                                </>
                             )}
                         </Field>
 
                     </> : null}
 
-                    <button type="submit" disabled={submitting}>
+                    <StyledSubmit type="submit" disabled={submitting}>
                         Submit
-                    </button>
+                    </StyledSubmit>
+                    {error ? <StyledAlert isErr={true}>{error}</StyledAlert> : null}
+                    {success ? <StyledAlert>Success</StyledAlert> : null}
+                    {loading ? <StyledAlert >Loading...</StyledAlert> : null}
 
-                </form>
+                </StyledMyForm>
             )}
         />
     )
